@@ -1,0 +1,8 @@
+requests>=2.31
+beautifulsoup4>=4.12
+
+# Optional, only needed for:
+#   python -m hackmit_recon.run --render
+# Install with:
+#   pip install playwright && playwright install chromium
+# playwright>=1.40
