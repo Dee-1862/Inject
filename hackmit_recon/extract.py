@@ -171,7 +171,7 @@ def analyze_js(url: str, code: str, inline: bool = False) -> list[Finding]:
     # Minified / obfuscated heuristic: very long lines + low whitespace ratio.
     longest = max((len(line) for line in code.splitlines()), default=0)
     ws_ratio = (code.count(" ") + code.count("\n")) / max(len(code), 1)
-    if longest > 500 and ws_ratio < 0.08 and len(code) > 800:
+    if _looks_like_script_asset(url) and longest > 500 and ws_ratio < 0.08 and len(code) > 800:
         findings.append(
             Finding(
                 "obfuscated_js",
@@ -198,6 +198,11 @@ def analyze_js(url: str, code: str, inline: bool = False) -> list[Finding]:
             )
 
     return findings
+
+
+def _looks_like_script_asset(url: str) -> bool:
+    path = urlparse(url).path.lower()
+    return path.endswith((".js", ".mjs", ".cjs")) or "#inline" in url
 
 
 def _pattern_weight(name: str) -> int:
