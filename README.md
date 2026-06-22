@@ -35,6 +35,7 @@ python -m hackmit_recon.run                 # static pass, prints ranked seams
 python -m hackmit_recon.run --depth 3       # crawl one level deeper
 python -m hackmit_recon.run --render        # add headless browser pass
 python -m hackmit_recon.run --probe         # enable the tiny endpoint probe
+python -m hackmit_recon.monitor             # focused website-only drop monitor
 ```
 
 Rendered pass needs Playwright:
@@ -46,6 +47,11 @@ playwright install chromium
 
 Output: a timestamped `runs/recon-*.json` plus a console summary. Re-running
 prints what changed since last time.
+
+The focused monitor writes `runs/site-monitor-*.json` and watches the live
+homepage bundle, Plume OpenAPI schema, and documented `hack-2026` challenge /
+project / category / track collections. It is useful once recon has narrowed
+the likely drop surfaces and you want a low-noise diff.
 
 ## Be a good guest
 

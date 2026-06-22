@@ -45,6 +45,28 @@ that `fetch()`es a subdomain.
 Prompt it to produce a short "most likely door" shortlist with its reasoning,
 but keep the hard rule: locate, do not solve.
 
+## Option C - low-noise website-only monitor
+
+After reconnaissance has narrowed the likely drop surfaces, run the focused
+monitor instead of the full crawler:
+
+```text
+Goal: monitor only live website-served artifacts that are likely to change when
+the HackMIT admissions puzzle drops. Do not solve or brute force anything.
+
+Each run:
+1. Execute: python -m hackmit_recon.monitor --out runs
+2. Read the "change since last monitor run" section.
+3. If there is a content hash/status/json-summary change, summarize the changed
+   target and why it matters.
+4. If nothing changed, reply with a single line: "no change".
+
+Watched surfaces:
+- hackmit.org homepage HTML, JS bundle, and CSS bundle
+- plume.hackmit.org OpenAPI schema
+- documented hack-2026 challenges/projects/categories/tracks JSON collections
+```
+
 ## Environment notes
 
 - The sandbox needs outbound network to `hackmit.org`.

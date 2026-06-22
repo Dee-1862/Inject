@@ -5,6 +5,7 @@ __all__ = [
     "crawl",
     "extract",
     "fetcher",
+    "monitor",
     "render",
     "report",
 ]

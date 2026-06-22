@@ -3,7 +3,7 @@ from __future__ import annotations
 import tempfile
 import unittest
 
-from hackmit_recon import crawl, extract, report
+from hackmit_recon import crawl, extract, monitor, report
 
 
 class ExtractTests(unittest.TestCase):
@@ -69,6 +69,46 @@ class ReportTests(unittest.TestCase):
 
         self.assertEqual(first_notes, ["first run - no previous snapshot to diff against."])
         self.assertTrue(any("NEW finding" in note for note in second_notes))
+
+
+class MonitorTests(unittest.TestCase):
+    def test_monitor_hash_and_diff_detect_content_change(self) -> None:
+        first = {
+            "generated_at": "2026-01-01T00:00:00+00:00",
+            "targets": [
+                {
+                    "name": "example",
+                    "url": "https://example.test/a",
+                    "kind": "json_collection",
+                    "status": 200,
+                    "sha256": monitor.sha256_text("[]"),
+                    "summary": {"json": {"type": "list", "count": 0}},
+                }
+            ],
+        }
+        second = {
+            "generated_at": "2026-01-01T00:01:00+00:00",
+            "targets": [
+                {
+                    "name": "example",
+                    "url": "https://example.test/a",
+                    "kind": "json_collection",
+                    "status": 200,
+                    "sha256": monitor.sha256_text("[1]"),
+                    "summary": {"json": {"type": "list", "count": 1}},
+                }
+            ],
+        }
+
+        with tempfile.TemporaryDirectory() as tmp:
+            first_notes = monitor.diff_against_previous(first, tmp)
+            second_notes = monitor.diff_against_previous(second, tmp)
+
+        self.assertEqual(
+            first_notes,
+            ["first monitor run - no previous site snapshot to diff against."],
+        )
+        self.assertTrue(any("content hash changed" in note for note in second_notes))
 
 
 if __name__ == "__main__":
